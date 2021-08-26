@@ -23,9 +23,9 @@ Tenga en cuenta las siguientes consideraciones técnicas:
 ### Pregunta 1
 Como resolvería este tipo de petición? Explique detalladamente el proceso de limpieza y transformación del modelo inicial. Que tecnologías utilizaría y por que?
 
-*Dado que se trata de un origen de datos estructurado y estratégico para el negocio, que podría contener miles de millones de registros, lo recomendado para este caso es enviar los datos transaccionalmente a un Data Warehouse.*  
+> Dado que se trata de un origen de datos estructurado y estratégico para el negocio, que podría contener miles de millones de registros, lo recomendado para este caso es enviar los datos transaccionalmente a un Data Warehouse.  
 
-*Por lo entendido durante el periodo de entrevistas, Santander cuenta con los servicios de AWS. En este caso el servicio recomendado es AWS Redshift, como uno de los esquemas de facturación de este servicio es por cantidad bytes analizados, con un mínimo de tamaño por consulta. Lo recomendado es envío de lotes de datos.*
+> Por lo entendido durante el periodo de entrevistas, Santander cuenta con los servicios de AWS. En este caso el servicio recomendado es AWS Redshift, como uno de los esquemas de facturación de este servicio es por cantidad bytes analizados, con un mínimo de tamaño por consulta. Lo recomendado es envío de lotes de datos.
 
 ### Ejercicio 1
 Realice el DER que de soporte al modelo dimensional solicitado por la banca privada.
@@ -123,17 +123,27 @@ END CATCH;
 ### Ejercicio 3
 Escriba la consulta necesaria para obtener el KPI de retención de clientes para los 10 clientes que mas veces se hayan logueado en el último mes.
 
+```
+
+```
+
 ### Pregunta 2
 Suponga que la ingesta de estos datos se realiza utilizando Apache Spark debido a que la tabla cruda tiene billones de registros. Que parametros de spark tendría en cuenta a la hora de realizar dicha ingesta? Explique brevemente en que consta cada uno de ellos. 
 En que formato de compresión escribiría los resultados? Por que?
+
+> Se debe tener en cuenta la cantidad de nodos en los cuales se particionara la ejecución para que de el procesamiento de los datos corra paralellamente si se quiere. A partir de un master node y una determinada cantidad de workers node. Para que suceda esto se debe ejecutar en cluster-mode.
+
+> Por otro lado, se puede determinar la cantidad de memoria y nucleos a utilizar por cada node.
+
+> Con respecto al formato de compresión se podrían escribir en Parquet dado que es un formato tabular que de por si posee una compresión que optimizaría en espacio.
 
 ### Pregunta 3
 
 Existen varios problemas en cuanto a la calidad de datos de la tablas que consultan los usuarios de la banca privada, se esta investigando como mejorar y prevenir estos incidentes. Describa brevemente que implementaría para garantizar la confiabilidad de los datos.
 
-*Cuando se habla de calidad de datos, hay varios motivos por los cuales podrían surgir incidentes que condicionen su calidad. Registros o columnas faltantes, formatos erróneos y significado en los datos.*
+>Cuando se habla de calidad de datos, hay varios motivos por los cuales podrían surgir incidentes que condicionen su calidad. Registros o columnas faltantes, formatos erróneos y significado en los datos.
 
-*En la mayoría de los casos, las causas se deben a procesos en la ingesta de información o procedimientos pocos estandarizados (data entry o external sources). Asimismo, otra de las causantes de la falta de información o información errónea es la acumulación de silos de información a lo largo de la organización, donde en caso de compararse surgirían diferencias entre las mismas. Por último y en concordancia del Principle of least Privilege, se debe velar quién, cómo, cuando y donde se accede a la información, dado que el usuario podría generar algún incidente si tuviera mayores permisos que los correspondidos a su rol en la organización.*
+>En la mayoría de los casos, las causas se deben a procesos en la ingesta de información o procedimientos pocos estandarizados (data entry o external sources). Asimismo, otra de las causantes de la falta de información o información errónea es la acumulación de silos de información a lo largo de la organización, donde en caso de compararse surgirían diferencias entre las mismas. Por último y en concordancia del Principle of least Privilege, se debe velar quién, cómo, cuando y donde se accede a la información, dado que el usuario podría generar algún incidente si tuviera mayores permisos que los correspondidos a su rol en la organización.
 
 ### Python 
 (Para hacerlo interesante, usar Python 2.7)
@@ -149,5 +159,13 @@ El archivo resultante debe tener las siguientes características:
 
 ### Preguntas
 * En qué requerimiento implementarías una cola de mensajes en una solución orientada a datos?  Que lenguaje utilizarías y porque?
+
+> asd
+
 * Que experiencia posees sobre py spark o spark scala? Contar breves experiencias, en caso de contar experiencia con otro framework de procesamiento distribuido, dar detalles también.
+
+> 
+
 * Qué funcionalidad podrías expandir desde el area de ingeniería de datos con una API y arquitectónicamente como lo modelarías?
+
+> asd
