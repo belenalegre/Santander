@@ -30,7 +30,7 @@ Como resolvería este tipo de petición? Explique detalladamente el proceso de l
 ### Ejercicio 1
 Realice el DER que de soporte al modelo dimensional solicitado por la banca privada.
 
-![image](images/der.png)
+<img width="557" alt="der" src="https://user-images.githubusercontent.com/69255326/131026928-0c586663-ef3c-46ec-96e4-7f46172bec90.PNG">
 
 ### Ejercicio 2 
 Escriba las queries necesarias partiendo de la tabla inicial y que de como resultado el modelo planteado en el ejercicio anterior.
