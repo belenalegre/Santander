@@ -1,0 +1,76 @@
+BEGIN TRANSACTION Test_Santander;
+
+  BEGIN TRY
+
+        INSERT INTO dimCITYS (USER_CITY)
+        SELECT DISTINCT src.USER_CITY
+        FROM home_banking src
+        LEFT JOIN dimCITYS dst ON (src.USER_CITY = dst.USER_CITY)
+        WHERE dst.USER_CITY IS NULL;
+
+        INSERT INTO dimEVENTS (EVENT_ID,EVENT_DESCRIPTION)
+        SELECT DISTINCT src.EVENT_ID, src.EVENT_DESCRIPTION
+        FROM home_banking src
+        LEFT JOIN dimEVENTS dst ON (src.EVENT_ID = dst.EVENT_ID)
+        WHERE dst.EVENT_ID IS NULL;
+
+        INSERT INTO dimBROWSERS (DEVICE_BROWSER)
+        SELECT DISTINCT src.DEVICE_BROWSER
+        FROM home_banking src
+        LEFT JOIN dimBROWSERS dst ON (src.DEVICE_BROWSER = dst.DEVICE_BROWSER)
+        WHERE dst.DEVICE_BROWSER IS NULL;
+
+        INSERT INTO dimMOBILES (DEVICE_MOBILE)
+        SELECT DISTINCT src.DEVICE_MOBILE
+        FROM home_banking src
+        LEFT JOIN dimMOBILES dst ON (src.DEVICE_MOBILE = dst.DEVICE_MOBILE)
+        WHERE dst.DEVICE_MOBILE IS NULL;
+
+        INSERT INTO dimOS (DEVICE_OS)
+        SELECT DISTINCT src.DEVICE_OS
+        FROM home_banking src
+        LEFT JOIN dimOS dst ON (src.DEVICE_OS = dst.DEVICE_OS)
+        WHERE dst.DEVICE_OS IS NULL;
+
+        INSERT INTO dimSEGMENTS (SEGMENT_ID, SEGMENT_DESCRIPTION)
+        SELECT DISTINCT src.SEGMENT_ID, src.SEGMENT_DESCRIPTION
+        FROM home_banking src
+        LEFT JOIN dimSEGMENTS dst ON (src.SEGMENT_ID = dst.SEGMENT_ID)
+        WHERE dst.SEGMENT_ID IS NULL;
+
+        WITH UsersSinDupli AS  
+        (  
+            SELECT DISTINCT src.USER_ID, src.SEGMENT_ID
+            FROM home_banking src
+            LEFT JOIN USERS dst ON (src.USER_ID = dst.USER_ID)
+            WHERE dst.USER_ID IS NULL  
+        )
+        INSERT INTO USERS (USER_ID, SEGMENT_ID)
+        select USER_ID,SEGMENT_ID 
+        from UsersSinDupli;
+
+        INSERT INTO SESSIONS (SESSION_ID, EVENT_ID, USER_ID, DEVICE_BROWSER_ID, DEVICE_MOBILE_ID, DEVICE_OS_ID, USER_CITY_ID, SERVER_TIME, TIME_SPENT, CRASH_DETECTION)
+        SELECT 
+            src.SESSION_ID, 
+            src.EVENT_ID, 
+            src.USER_ID, 
+            (SELECT dimBROWSERS.DEVICE_BROWSER_ID FROM dimBROWSERS WHERE src.DEVICE_BROWSER = dimBROWSERS.DEVICE_BROWSER),
+            (SELECT dimMOBILES.DEVICE_MOBILE_ID FROM dimMOBILES WHERE src.DEVICE_MOBILE = dimMOBILES.DEVICE_MOBILE) ,
+            (SELECT dimOS.DEVICE_OS_ID FROM dimOS WHERE src.DEVICE_OS = dimOS.DEVICE_OS),
+            (SELECT dimCITYS.USER_CITY_ID FROM dimCITYS WHERE src.USER_CITY = dimCITYS.USER_CITY), 
+            src.SERVER_TIME,
+            src.TIME_SPENT, 
+            src.CRASH_DETECTION
+        FROM home_banking src
+        LEFT JOIN (SELECT SESSION_ID FROM SESSIONS) dst ON (src.SESSION_ID = dst.SESSION_ID)
+        WHERE dst.SESSION_ID IS NULL;
+
+        COMMIT TRANSACTION Test_Santander;
+
+  END TRY
+
+  BEGIN CATCH
+
+      ROLLBACK TRANSACTION Test_Santander;
+
+  END CATCH;
